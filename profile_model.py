@@ -1,7 +1,5 @@
 import torch
-import cProfile
-import pstats
-import io
+from torch.profiler import profile, record_function, ProfilerActivity
 from model import GPT, Config, Util
 
 with open('input.txt', 'r', encoding='utf-8') as f:
@@ -13,18 +11,22 @@ model = GPT(config).to(config.device)
 
 model.eval()
 
-print("Profiling model generation...")
-profiler = cProfile.Profile()
-profiler.enable()
+print(f"Profiling model generation on {config.device}")
 
-context = torch.zeros((1, 1), dtype=torch.long, device=config.device)
+activities = [ProfilerActivity.CPU]
+if config.device == 'cuda':
+    activities.append(ProfilerActivity.CUDA)
+
+context = torch.zeros((1,1), dtype=torch.long, device=config.device)
+
 with torch.no_grad():
-    output = model.generate(context, max_new_tokens=100)
+    with profile(
+        activities=activities,
+        record_shapes=True,
+        with_stack=True
+    ) as prof:
+        with record_function("model_generation"):
+            output = model.generate(context, max_new_tokens=100)
 
-profiler.disable()
-
-s = io.StringIO()
-stats = pstats.Stats(profiler, stream=s)
-stats.sort_stats('cumulative')
-stats.print_stats(20)
-print(s.getvalue())
+print("\n--- Profiler Results (Grouped by Stack) ---")
+print(prof.key_averages(group_by_stack_n=5).table(sort_by="cpu_time_total", row_limit=20))
