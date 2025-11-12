@@ -1,6 +1,6 @@
 ### PyTorch Transformer Inference Engine
 
-- GPT-2 inference implementation with KV caching for efficient generation.
+- GPT-2 inference implementation with KV caching for efficient generation
 - Base architecture: Adapted from [nanoGPT](https://github.com/karpathy/nanoGPT)
 
 ## Implementations
