@@ -1,18 +1,13 @@
 ### PyTorch Transformer Inference Engine
 
-GPT-2 inference implementation with KV caching for efficient generation.
-
-## Implementation
-
+- GPT-2 inference implementation with KV caching for efficient generation.
 - Base architecture: Adapted from [nanoGPT](https://github.com/karpathy/nanoGPT)
-- **KV caching**: My implementation for 4x speedup
-- **Profiling & benchmarking**: My performance analysis
 
-## My Contributions
+## Implementations
 
-1. Implemented KV cache mechanism in attention layers
+1. Implemented KV cache mechanism in attention layers on top of the base architecture
 2. Profiled inference bottlenecks
-3. Benchmarked speedup (4.2x on 512-token sequences)
+3. Benchmarked speedup (3.0x on 512-token sequences, 8.6x on 1024-token sequences)
 4. Implemented a simple transformer model in PyTorch (model.py)
 
 ### Benchmark Results
