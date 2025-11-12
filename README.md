@@ -16,3 +16,21 @@
 | --------------- | ----------- | ------------- | -------- | ---------- |
 | 512 tokens      | 149.6 tok/s | 453.7 tok/s   | **3.0x** | 67.0%      |
 | 1024 tokens     | 52.4 tok/s  | 452.2 tok/s   | **8.6x** | 88.4%      |
+
+### Profiling Analysis (torch.profiler on CUDA)
+
+**Performance breakdown:**
+
+| Component              | Baseline (no cache) | With KV Cache | Reduction |
+| ---------------------- | ------------------- | ------------- | --------- |
+| Total CUDA time        | 1.116s              | 0.751s        | **32.7%** |
+| Attention operations   | 26.2ms              | 15.8ms        | **40%**   |
+| Matrix multiplications | 345ms               | 167ms         | **51.7%** |
+| Linear layers          | 409ms               | 233ms         | **43%**   |
+
+**Key findings:**
+
+- KV caching reduces redundant attention computations by 40%
+- Matrix operations decreased by ~50% due to fewer key-value recomputations
+- Overall GPU utilization improved by 33%
+- Memory overhead: ~10% increase
